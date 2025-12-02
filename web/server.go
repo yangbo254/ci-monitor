@@ -16,7 +16,7 @@ var tpl = `
 <html>
 <head>
 <meta charset="utf-8"/>
-<title>CI 状态看板</title>
+<title>云机房 CI 状态看板</title>
 <style>
 body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
 h2 { text-align: center; margin-top: 20px; }
