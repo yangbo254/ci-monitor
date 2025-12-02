@@ -22,11 +22,6 @@ RUN go test -v ./...
 # Deploy the application binary into a lean image
 FROM alpine:3.22 AS build-release-stage
 
-WORKDIR /
-
-# Install logrotate
-RUN apt-get update && apt-get -y install logrotate
-
 WORKDIR /ci-monitor
 COPY --from=build-stage /ci-monitor /ci-monitor
 
