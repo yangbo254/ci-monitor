@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
-	"strings"
 
 	"ci-monitor/logger"
 	ci "ci-monitor/types"
+
 	"github.com/go-resty/resty/v2"
 )
 
@@ -38,11 +39,11 @@ func FetchAll(cfg *ci.Config) []ci.ProjectStatus {
 
 	for _, p := range cfg.Projects {
 		wg.Add(1)
-		go func(pc ci.ProjectConfig,cfg *ci.Config) {
+		go func(pc ci.ProjectConfig, cfg *ci.Config) {
 			defer wg.Done()
-			ps := FetchOne(pc,cfg)
+			ps := FetchOne(pc, cfg)
 			ch <- ps
-		}(p,cfg)
+		}(p, cfg)
 	}
 
 	wg.Wait()
@@ -143,7 +144,7 @@ func FetchOne(c ci.ProjectConfig, cfg *ci.Config) ci.ProjectStatus {
 		if prev.CommitSHA != result.CommitSHA {
 			triggerWebhook(cfg, c, result, "commit_change")
 		}
-		if prev.CI.Status != result.CI.Status || prev.ReleaseCI.Status != result.ReleaseCI.Status {
+		if (prev.CI.Status != result.CI.Status || prev.ReleaseCI.Status != result.ReleaseCI.Status) && PickColor(result) != "yellow" {
 			triggerWebhook(cfg, c, result, "pipeline_change")
 		}
 	}
@@ -187,12 +188,12 @@ func triggerWebhook(cfg *ci.Config, c ci.ProjectConfig, ps ci.ProjectStatus, eve
 
 	var msg string
 	if len(atNames) > 0 {
-		msg = "[CI Bot]"
+		msg = "[CI Bot]\n"
 	}
 	switch eventType {
 	case "commit_change":
 		msg += fmt.Sprintf(
-			"项目 [%s] 有新的提交\n简介: %s\nBranch: %s\nCommit SHA: %s\n作者: %s\n提交时间: %s\n提交信息: %s\nCommit CI 状态: %s\nRelease SHA: %s\n作者: %s\n提交时间: %s\n提交信息: %s\nRelease CI 状态: %s",
+			"项目 [**%s**] 有新的提交\n**简介**: %s\n**Branch**: %s\n**Commit SHA**: %s\n**作者**: %s\n**提交时间**: %s\n**提交信息**: %s\n**Commit CI 状态**: **%s**\n",
 			ps.ProjectName,
 			ps.Intro,
 			ps.Branch,
@@ -201,15 +202,10 @@ func triggerWebhook(cfg *ci.Config, c ci.ProjectConfig, ps ci.ProjectStatus, eve
 			ps.CommitTime,
 			ps.CommitMessage,
 			ps.CI.Status,
-			ps.ReleaseShortSHA,
-			ps.ReleaseAuthor,
-			ps.ReleaseTime,
-			ps.ReleaseMessage,
-			ps.ReleaseCI.Status,
 		)
 	case "pipeline_change":
 		msg += fmt.Sprintf(
-			"项目 [%s] 的流水线状态发生变化\nCommit CI 状态: %s\nRelease CI 状态: %s",
+			"项目 [%s] 的流水线状态发生变化\n**Commit CI 状态**: %s\n**Release CI 状态**: %s",
 			ps.ProjectName,
 			ps.CI.Status,
 			ps.ReleaseCI.Status,
@@ -219,9 +215,9 @@ func triggerWebhook(cfg *ci.Config, c ci.ProjectConfig, ps ci.ProjectStatus, eve
 	}
 
 	payload := map[string]interface{}{
-		"msgtype": "text",
-		"text": map[string]string{
-			"content": msg,
+		"msgtype": "markdown",
+		"markdown": map[string]string{
+			"text": msg,
 		},
 		"at": map[string]interface{}{
 			"isAtAll":   false,
@@ -258,5 +254,3 @@ func shortSHA(s string) string {
 	}
 	return s
 }
-
-

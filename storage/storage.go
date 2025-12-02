@@ -6,10 +6,9 @@ import (
 	"fmt"
 	"os"
 	"sync"
-	
 
-	ci "ci-monitor/types"
 	"ci-monitor/logger"
+	ci "ci-monitor/types"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -100,6 +99,9 @@ func LoadGroupedProjectStatus() (map[string][]ci.ProjectStatus, error) {
 		grpName := groupMap[s.GroupID]
 		if grpName == "" {
 			grpName = "未分组"
+		}
+		if s.StatusColor != "green" {
+			grpName = "Topic: 未完成项目"
 		}
 		grouped[grpName] = append(grouped[grpName], s)
 	}
