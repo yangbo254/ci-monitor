@@ -13,15 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      env:
-        TIME: $(date +%s)
-      run: |
-        docker build . --file Dockerfile --tag ci-monitor:latest
-        docker login -u ${{ secrets.DOCKER_IO_ACCESS }} -p ${{ secrets.DOCKER_IO_ACCESS_TOKEN }}
-        docker image ls
-        docker tag  ci-monitor:latest  yangbo2/ci-monitor:latest
-        docker tag  ci-monitor:latest  yangbo2/ci-monitor:$TIME
-        docker push yangbo2/ci-monitor:latest
-        docker push yangbo2/ci-monitor:$TIME
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Get Time
+        id: time
+        uses: nanzm/get-time-action@master
+        with:
+          timeZone: UTC+8
+          format: 'YYYYMMDDHHmmss'
+
+      - name: Build And Push Docker image
+        env:
+          TIME: "${{ steps.time.outputs.time }}"
+        run: |
+          docker build . --file Dockerfile --tag ci-monitor:latest
+          docker login -u ${{ secrets.DOCKER_IO_ACCESS }} -p ${{ secrets.DOCKER_IO_ACCESS_TOKEN }}
+          docker image ls
+          docker tag  ci-monitor:latest  yangbo2/ci-monitor:latest
+          docker image ls
+          docker tag  ci-monitor:latest  yangbo2/ci-monitor:$TIME
+          docker push yangbo2/ci-monitor:latest
+          docker push yangbo2/ci-monitor:$TIME
