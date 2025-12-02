@@ -21,7 +21,7 @@ jobs:
         docker build . --file Dockerfile --tag ci-monitor:latest
         docker login -u ${{ secrets.DOCKER_IO_ACCESS }} -p ${{ secrets.DOCKER_IO_ACCESS_TOKEN }}
         docker image ls
-        docker tag ci-monitor:latest yangbo2/ci-monitor:latest
-        docker tag ci-monitor:latest yangbo2/ci-monitor:$TIME
+        docker tag  ci-monitor:latest  yangbo2/ci-monitor:latest
+        docker tag  ci-monitor:latest  yangbo2/ci-monitor:$TIME
         docker push yangbo2/ci-monitor:latest
         docker push yangbo2/ci-monitor:$TIME
