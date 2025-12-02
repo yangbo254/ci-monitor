@@ -1,0 +1,24 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      env:
+        TIME: $(date +%s)
+      run: docker build . --file Dockerfile --tag yangbo2/ci-monitor:latest
+           docker login -u ${{ secrets.DOCKER_IO_ACCESS }} -p ${{ secrets.DOCKER_IO_ACCESS_TOKEN }}
+           docker tag yangbo2/ci-monitor:latest yangbo2/ci-monitor:$TIME
+           docker push yangbo2/ci-monitor:latest
+           docker push yangbo2/ci-monitor:$TIME
