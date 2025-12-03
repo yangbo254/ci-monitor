@@ -193,7 +193,7 @@ func triggerWebhook(cfg *ci.Config, c ci.ProjectConfig, ps ci.ProjectStatus, eve
 	switch eventType {
 	case "commit_change":
 		msg += fmt.Sprintf(
-			"项目 [**%s**] 有新的提交\n**简介**: %s\n**Branch**: %s\n**Commit SHA**: %s\n**作者**: %s\n**提交时间**: %s\n**提交信息**: %s\n**Commit CI 状态**: **%s**\n",
+			"项目 [ **%s** ] 有新的提交\n**简介** : %s\n**Branch** : %s\n**Commit SHA** : %s\n**作者** : %s\n**提交时间** : %s\n**提交信息** : %s\n**Commit CI 状态** : **%s**\n",
 			ps.ProjectName,
 			ps.Intro,
 			ps.Branch,
@@ -205,7 +205,7 @@ func triggerWebhook(cfg *ci.Config, c ci.ProjectConfig, ps ci.ProjectStatus, eve
 		)
 	case "pipeline_change":
 		msg += fmt.Sprintf(
-			"项目 [%s] 的流水线状态发生变化\n**Commit CI 状态**: %s\n**Release CI 状态**: %s",
+			"项目 [ **%s** ] 的流水线状态发生变化\n** Commit CI 状态 ** : %s\n**Release CI 状态** : %s",
 			ps.ProjectName,
 			ps.CI.Status,
 			ps.ReleaseCI.Status,
