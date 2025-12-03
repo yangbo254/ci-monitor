@@ -135,7 +135,12 @@ func StartHTTP() {
 	http.HandleFunc("/api/status", func(w http.ResponseWriter, r *http.Request) {
 		logger.Debug.Printf("API访问: %s %s from %s", r.Method, r.RequestURI, r.RemoteAddr)
 
-		grouped, _ := storage.LoadGroupedProjectStatus()
+		grouped, _ := storage.LoadGroupedProjectStatusWithoutGreen()
+		groupedN, _ := storage.LoadGroupedProjectStatus()
+
+		for key, value := range groupedN {
+			grouped[key] = value
+		}
 
 		// 对返回 JSON 做时间格式转换、截短 SHA
 		resp := map[string]interface{}{}

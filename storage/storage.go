@@ -80,6 +80,47 @@ func LoadProjectStatus() ([]ci.ProjectStatus, error) {
 		return memStore, nil
 	}
 }
+func LoadGroupedProjectStatusWithoutGreen() (map[string][]ci.ProjectStatus, error) {
+	cfg, err := LoadConfig("config.json")
+	if err != nil {
+		return nil, err
+	}
+
+	statusList, _ := LoadProjectStatus()
+
+	groupMap := make(map[int]string)
+	for _, g := range cfg.GroupInfo {
+		groupMap[g.ID] = g.Name
+	}
+
+	grouped := make(map[string][]ci.ProjectStatus)
+	for _, s := range statusList {
+		grpName := groupMap[s.GroupID]
+		if grpName == "" {
+			grpName = "未分组"
+		}
+		if s.StatusColor != "green" {
+			grpName = "Topic: 未完成项目"
+			grouped[grpName] = append(grouped[grpName], s)
+		}
+
+	}
+
+	// 按 ProjectID 排序每组
+	for k := range grouped {
+		list := grouped[k]
+		for i := 0; i < len(list)-1; i++ {
+			for j := i + 1; j < len(list); j++ {
+				if list[i].ProjectID > list[j].ProjectID {
+					list[i], list[j] = list[j], list[i]
+				}
+			}
+		}
+		grouped[k] = list
+	}
+
+	return grouped, nil
+}
 
 func LoadGroupedProjectStatus() (map[string][]ci.ProjectStatus, error) {
 	cfg, err := LoadConfig("config.json")
