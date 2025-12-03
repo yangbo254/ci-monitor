@@ -33,7 +33,7 @@ RUN apk --no-cache add ca-certificates \
     && apk del tzdata
 
 WORKDIR /app
-COPY --from=build-stage /ci-monitor /ci-monitor
+COPY --from=build-stage /ci-monitor /app/ci-monitor
 
-ENTRYPOINT ["/ci-monitor"]
+ENTRYPOINT ["/app/ci-monitor"]
 EXPOSE 8080
