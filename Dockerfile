@@ -29,8 +29,7 @@ ENV TZ Asia/Shanghai
 RUN apk --no-cache add ca-certificates \
     && apk add --no-cache tzdata \
     && cp /usr/share/zoneinfo/${TZ} /etc/localtime \
-    && echo ${TZ} > /etc/timezone \
-    && apk del tzdata
+    && echo ${TZ} > /etc/timezone
 
 WORKDIR /app
 COPY --from=build-stage /ci-monitor /app/ci-monitor
