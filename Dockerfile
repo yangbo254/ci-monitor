@@ -22,6 +22,16 @@ RUN go test -v ./...
 # Deploy the application binary into a lean image
 FROM alpine:3.22 AS build-release-stage
 
+# 设置时区
+ENV TZ Asia/Shanghai
+
+# 安装 tzdata，复制时区文件，设置时区文件，最后删除 tzdata 包
+RUN apk --no-cache add ca-certificates \
+    && apk add --no-cache tzdata \
+    && cp /usr/share/zoneinfo/${TZ} /etc/localtime \
+    && echo ${TZ} > /etc/timezone \
+    && apk del tzdata
+
 WORKDIR /app
 COPY --from=build-stage /ci-monitor /ci-monitor
 
