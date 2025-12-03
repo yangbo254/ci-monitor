@@ -94,7 +94,7 @@ func FetchOne(c ci.ProjectConfig, cfg *ci.Config) ci.ProjectStatus {
 		result.CommitAuthor = fmt.Sprintf("%v", commits[0]["author_name"])
 		result.CommitTime = fmt.Sprintf("%v", commits[0]["created_at"])
 		result.CommitMessage = fmt.Sprintf("%v", commits[0]["title"])
-		logger.Info.Printf("[%s] Dev commit: %s by %s at %s msg:%s", c.Name, result.CommitSHA, result.CommitAuthor, result.CommitTime, result.CommitMessage)
+		logger.Debug.Printf("[%s] Dev commit: %s by %s at %s msg:%s", c.Name, result.CommitSHA, result.CommitAuthor, result.CommitTime, result.CommitMessage)
 
 		var pipelines []ci.PipelineInfo
 		client.R().
@@ -102,7 +102,7 @@ func FetchOne(c ci.ProjectConfig, cfg *ci.Config) ci.ProjectStatus {
 			Get(fmt.Sprintf("%s/api/v4/projects/%d/pipelines?ref=%s&per_page=1", c.GitlabHost, c.ID, c.Branch))
 		if len(pipelines) > 0 {
 			result.CI = pipelines[0]
-			logger.Info.Printf("[%s] Dev latest pipeline status: %s", c.Name, result.CI.Status)
+			logger.Debug.Printf("[%s] Dev latest pipeline status: %s", c.Name, result.CI.Status)
 		}
 	}
 
@@ -124,7 +124,7 @@ func FetchOne(c ci.ProjectConfig, cfg *ci.Config) ci.ProjectStatus {
 		result.ReleaseAuthor = fmt.Sprintf("%v", rcommits[0]["author_name"])
 		result.ReleaseTime = fmt.Sprintf("%v", rcommits[0]["created_at"])
 		result.ReleaseMessage = fmt.Sprintf("%v", rcommits[0]["title"])
-		logger.Info.Printf("[%s] Release commit: %s by %s at %s msg:%s", c.Name, result.ReleaseSHA, result.ReleaseAuthor, result.ReleaseTime, result.ReleaseMessage)
+		logger.Debug.Printf("[%s] Release commit: %s by %s at %s msg:%s", c.Name, result.ReleaseSHA, result.ReleaseAuthor, result.ReleaseTime, result.ReleaseMessage)
 
 		var pipelines []ci.PipelineInfo
 		rc.R().
@@ -132,7 +132,7 @@ func FetchOne(c ci.ProjectConfig, cfg *ci.Config) ci.ProjectStatus {
 			Get(fmt.Sprintf("%s/api/v4/projects/%d/pipelines?ref=%s&per_page=1", c.ReleaseHost, c.ReleaseID, c.ReleaseBranch))
 		if len(pipelines) > 0 {
 			result.ReleaseCI = pipelines[0]
-			logger.Info.Printf("[%s] Release latest pipeline status: %s", c.Name, result.ReleaseCI.Status)
+			logger.Debug.Printf("[%s] Release latest pipeline status: %s", c.Name, result.ReleaseCI.Status)
 		}
 	}
 

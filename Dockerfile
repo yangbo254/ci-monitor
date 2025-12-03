@@ -22,7 +22,7 @@ RUN go test -v ./...
 # Deploy the application binary into a lean image
 FROM alpine:3.22 AS build-release-stage
 
-WORKDIR /ci-monitor
+WORKDIR /app
 COPY --from=build-stage /ci-monitor /ci-monitor
 
 ENTRYPOINT ["/ci-monitor"]

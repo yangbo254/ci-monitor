@@ -5,8 +5,8 @@ import (
 	"ci-monitor/logger"
 	"ci-monitor/storage"
 	"ci-monitor/web"
-	"time"
 	"log"
+	"time"
 )
 
 func main() {
@@ -28,7 +28,7 @@ func main() {
 
 			list := fetcher.FetchAll(cfg)
 			storage.SaveProjectStatus(list)
-			time.Sleep(5 * time.Second)
+			time.Sleep(3 * time.Second)
 		}
 	}()
 

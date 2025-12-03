@@ -24,7 +24,7 @@ table { border-collapse: collapse; width: 95%; margin: 20px auto; box-shadow: 0 
 th, td { padding: 10px 15px; text-align: center; border: 1px solid #ccc; }
 th { background-color: #4CAF50; color: white; }
 tr.red { background: #ffb3b3; }
-tr.yellow { background: #fff2b3; }
+tr.yellow { background: #f1d549ff; }
 tr.green { background: #b3ffb3; }
 tr:hover { background-color: #e0f7fa; }
 td.sha, td.id { font-family: monospace; }
@@ -95,7 +95,7 @@ function refreshData() {
 }
 
 // 每 5 秒刷新
-setInterval(refreshData, 5000);
+setInterval(refreshData, 4000);
 
 // 首次加载
 refreshData();
@@ -133,7 +133,7 @@ func StartHTTP() {
 
 	// 后端 API
 	http.HandleFunc("/api/status", func(w http.ResponseWriter, r *http.Request) {
-		logger.Info.Printf("API访问: %s %s from %s", r.Method, r.RequestURI, r.RemoteAddr)
+		logger.Debug.Printf("API访问: %s %s from %s", r.Method, r.RequestURI, r.RemoteAddr)
 
 		grouped, _ := storage.LoadGroupedProjectStatus()
 
@@ -152,8 +152,8 @@ func StartHTTP() {
 					"CommitShortSHA": shortSHA(p.CommitSHA),
 					"CommitAuthor":   p.CommitAuthor,
 					"CommitTimeFmt":  formatTime(p.CommitTime),
-					"CommitMessage":   p.CommitMessage, 
-					"CommitShortMsg":   shortMessage(p.CommitMessage), 
+					"CommitMessage":  p.CommitMessage,
+					"CommitShortMsg": shortMessage(p.CommitMessage),
 					"CI":             p.CI,
 
 					"ReleaseSHA":      p.ReleaseSHA,
