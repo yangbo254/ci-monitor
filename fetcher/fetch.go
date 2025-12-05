@@ -215,9 +215,9 @@ func triggerWebhook(cfg *ci.Config, c ci.ProjectConfig, ps ci.ProjectStatus, eve
 	}
 
 	payload := map[string]interface{}{
-		"msgtype": "markdown",
-		"markdown": map[string]string{
-			"text": msg,
+		"msgtype": "text",
+		"text": map[string]string{
+			"content": msg,
 		},
 		"at": map[string]interface{}{
 			"isAtAll":   false,
