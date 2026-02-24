@@ -55,10 +55,25 @@ type PhoneBook struct {
 }
 
 type Config struct {
-	RedisAddr  string          `json:"redis_addr"`
-	PhoneBooks []PhoneBook     `json:"phone_books"`
-	GroupInfo  []GroupInfo     `json:"groupinfo"`
-	Projects   []ProjectConfig `json:"projects"`
+	RedisAddr             string          `json:"redis_addr"`
+	LogLevel              string          `json:"log_level"`
+	NotifyCommitChange    bool            `json:"notify_commit_change"`
+	NotifyDebounceSeconds int             `json:"notify_debounce_seconds"`
+	WebhookTimeoutSeconds int             `json:"webhook_timeout_seconds"`
+	PhoneBooks            []PhoneBook     `json:"phone_books"`
+	GroupInfo             []GroupInfo     `json:"groupinfo"`
+	Projects              []ProjectConfig `json:"projects"`
 }
 
-
+type WebhookEvent struct {
+	EventID      string   `json:"event_id"`
+	ProjectID    int      `json:"project_id"`
+	ProjectName  string   `json:"project_name"`
+	EventType    string   `json:"event_type"`
+	Stage        string   `json:"stage"`
+	Timestamp    string   `json:"timestamp"`
+	MessageGroup string   `json:"message_group"`
+	AtMobiles    []string `json:"at_mobiles"`
+	Detail       string   `json:"detail,omitempty"`
+	HTTPStatus   string   `json:"http_status,omitempty"`
+}

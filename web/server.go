@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"strconv"
 	"time"
 
+	"ci-monitor/fetcher"
 	"ci-monitor/logger"
 	"ci-monitor/storage"
 )
@@ -173,6 +175,21 @@ func StartHTTP() {
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(resp)
+	})
+
+	http.HandleFunc("/api/webhook-events", func(w http.ResponseWriter, r *http.Request) {
+		logger.Debug.Printf("API访问: %s %s from %s", r.Method, r.RequestURI, r.RemoteAddr)
+
+		limit := 50
+		if raw := r.URL.Query().Get("limit"); raw != "" {
+			if parsed, err := strconv.Atoi(raw); err == nil {
+				limit = parsed
+			}
+		}
+
+		events := fetcher.GetWebhookEvents(limit)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(events)
 	})
 
 	fmt.Println("访问地址: http://0.0.0.0:8080/")

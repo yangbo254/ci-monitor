@@ -6,15 +6,28 @@ import (
 	"ci-monitor/storage"
 	"ci-monitor/web"
 	"log"
+	"os"
+	"strings"
 	"time"
 )
 
 func main() {
+	bootCfg, err := fetcher.LoadConfig("config.json")
+	if err == nil {
+		if level := strings.TrimSpace(bootCfg.LogLevel); level != "" {
+			os.Setenv("CI_MONITOR_LOG_LEVEL", level)
+		}
+	}
+
 	logger.Init("ci-monitor.log")
 	log.Println("启动 CI 监控程序...")
 
-	// 初始化存储, 为空表示使用内存
-	storage.Init("")
+	// 初始化存储
+	if bootCfg != nil {
+		storage.Init(bootCfg.RedisAddr)
+	} else {
+		storage.Init("")
+	}
 
 	// 定时抓取
 	go func() {
