@@ -1,0 +1,12 @@
+# 修改位置
+
+- `fetcher/fetch.go`
+- `fetcher/fetch_test.go`
+- `PLANS.md`
+- `bugfix/260318-批量汇总吞掉提交详情.md`
+- `bugfix/260318-批量汇总吞掉提交详情-codesnippet.md`
+
+# 修改说明
+
+- 调整批量通知正文格式，合并消息内输出每条事件的详细正文，修复 `commit_change` 详情被摘要覆盖的问题。
+- 新增回归测试，覆盖多条合并保留详情与单条通知格式不变两个关键场景。

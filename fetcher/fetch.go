@@ -440,7 +440,11 @@ func buildBatchMessage(items []pendingWebhookNotification) string {
 			b.WriteString(fmt.Sprintf("... 其余 %d 条请查看看板/API\n", len(items)-15))
 			break
 		}
-		b.WriteString(fmt.Sprintf("%d) %s\n", i+1, buildItemSummary(item)))
+
+		if i > 0 {
+			b.WriteString("\n")
+		}
+		b.WriteString(fmt.Sprintf("%d)\n%s\n", i+1, buildBatchItemDetail(item)))
 	}
 	return b.String()
 }
@@ -480,6 +484,10 @@ func buildItemSummary(item pendingWebhookNotification) string {
 	default:
 		return fmt.Sprintf("[%s] event=%s", item.ProjectName, item.EventType)
 	}
+}
+
+func buildBatchItemDetail(item pendingWebhookNotification) string {
+	return strings.TrimPrefix(buildSingleMessage(item), "[CI Bot]\n")
 }
 
 func parseCSV(value string) []string {
