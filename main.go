@@ -29,6 +29,12 @@ func main() {
 		storage.Init("")
 	}
 
+	if previous, err := storage.LoadProjectStatus(); err != nil {
+		log.Println("恢复历史项目状态失败:", err)
+	} else if seeded := fetcher.SeedPreviousStatus(previous); seeded > 0 {
+		log.Printf("已恢复 %d 条历史项目状态基线\n", seeded)
+	}
+
 	// 定时抓取
 	go func() {
 		for {

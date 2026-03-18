@@ -76,6 +76,9 @@ func LoadConfig(path string) (*ci.Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	if !jsonHasKey(data, "notify_commit_change") {
+		cfg.NotifyCommitChange = true
+	}
 	return &cfg, nil
 }
 
@@ -547,6 +550,30 @@ func setPreviousStatus(id int, status ci.ProjectStatus) {
 	previousStatusMu.Lock()
 	defer previousStatusMu.Unlock()
 	previousStatus[id] = status
+}
+
+func SeedPreviousStatus(list []ci.ProjectStatus) int {
+	previousStatusMu.Lock()
+	defer previousStatusMu.Unlock()
+
+	seeded := 0
+	for _, status := range list {
+		if status.ProjectID == 0 {
+			continue
+		}
+		previousStatus[status.ProjectID] = status
+		seeded++
+	}
+	return seeded
+}
+
+func jsonHasKey(data []byte, key string) bool {
+	var raw map[string]json.RawMessage
+	if err := json.Unmarshal(data, &raw); err != nil {
+		return false
+	}
+	_, ok := raw[key]
+	return ok
 }
 
 func recordWebhookEvent(event ci.WebhookEvent) {

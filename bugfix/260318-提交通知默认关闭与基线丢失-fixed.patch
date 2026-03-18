@@ -1,0 +1,14 @@
+# 修改位置
+
+- `fetcher/fetch.go`
+- `main.go`
+- `fetcher/fetch_test.go`
+- `PLANS.md`
+- `bugfix/260318-提交通知默认关闭与基线丢失.md`
+- `bugfix/260318-提交通知默认关闭与基线丢失-codesnippet.md`
+
+# 修改说明
+
+- 修复 `notify_commit_change` 缺失时被默认关闭的问题，恢复提交通知的默认开启行为。
+- 启动时恢复已存储的 `ProjectStatus` 作为基线，减少服务重启后的首轮提交漏报。
+- 新增回归测试，覆盖默认值、显式关闭和基线恢复三个关键场景。
